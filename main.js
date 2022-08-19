@@ -1,8 +1,7 @@
 const getImage = () => {
     const search = document.querySelector('.search').value
     const images = document.querySelector('.images')
-    var vue = "vue"
-    fetch(`https://api.unsplash.com/search/photos?query=${vue}&per_page=9&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`)
+    fetch(`https://api.unsplash.com/search/photos?query=${search}&per_page=9&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`)
         .then(response => response.json())
         .then(data => data.results.forEach(db => {
             console.log(db);
