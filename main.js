@@ -1,40 +1,72 @@
-const getImage = () => {
-  const search = document.querySelector(".search").value;
-  const images = document.querySelector(".images");
-  fetch(
-    `https://api.unsplash.com/search/photos?query=${search}&per_page=6&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`
-  )
-    .then((response) => response.json())
-    .then((data) =>
-      data.results.forEach((db) => {
-        console.log(db);
-        // card image
-        const card = document.createElement("div");
-        const img = document.createElement("img");
-        const time = document.createElement("p");
-        const title = document.createElement("h1");
-        // child
-        images.appendChild(card);
-        card.appendChild(img);
-        card.appendChild(title);
-        card.appendChild(time);
-        // class html elements
-        card.className = "card";
-        img.className = "lazyload";
-        img.id = "img";
-        // innerHTML
-        if (db.alt_description === null) {
-          db.alt_description = search;
-        }
-
-        // db.title
-
-        img.src = db.links.download;
-        title.innerHTML = db.alt_description.toUpperCase();
-        time.innerHTML = db.created_at;
-        img.loading = "lazy";
-      })
-    );
+// fetch(
+//   `https://api.unsplash.com/search/photos?query=${search}&per_page=6&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`
+// )
+let searchText = ''
+const input = document.querySelector(".search")
+let searchstatus = false
+const images = document.querySelector(".images");
+const btn = document.querySelector('.submit')
+async function getApi() {
+  const data = await fetch(
+    `https://api.unsplash.com/search/photos?query=images&per_page=6&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`,
+    {
+      method: "get",
+      headers: {
+        accept: "application/json",
+      },
+    }
+  );
+  const response = await data.json();
+  console.log(response);
+  displayImages(response);
+}
+getApi();
+const displayImages = (response) => {
+  response.results.forEach((db) => {
+    const photo = document.createElement("div");
+    photo.className = 'card'
+    images.appendChild(photo);
+    photo.innerHTML = `
+        <img src=${db.links.download} alt="rasm">
+    `;
+    console.log(db);
+  });
 };
 
-getImage();
+async function searchPhoto(query) {
+  const data = await fetch(
+    `https://api.unsplash.com/search/photos?query=${query}&per_page=6&client_id=4QHUZm9zq2POaoqtmuwqSyYPHJWMKjarPn7cyD7PcKo`,
+    {
+      method: "get",
+      headers: {
+        accept: "application/json",
+      },
+    }
+  );
+  const response = await data.json();
+  displayImages(response);
+}
+
+// input.addEventListiner("input", (e) => {
+//   e.preventDefault();
+//   searchText =  e.target.value
+// });
+
+input.addEventListener('input',(e)=>{
+    e.preventDefault()
+    searchText = e.target.value
+})
+
+
+btn.addEventListener('click',()=>{
+  if(input.value == ''){
+    alert('Qidiruvga yozing')
+  }else{
+    searchstatus = true
+    searchPhoto(searchText)
+    clear()
+  }
+})
+function clear() {
+  document.querySelector('.images').innerHTML = ''
+}
